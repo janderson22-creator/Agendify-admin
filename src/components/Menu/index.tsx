@@ -24,13 +24,6 @@ const Menu: React.FC = () => {
   const items = useMemo(
     () => [
       {
-        name: "Inicio",
-        link: `/`,
-        icon: <HomeIcon />,
-        show: true,
-        checked: pathname === "/",
-      },
-      {
         name: "Estabelecimento",
         link: `/${joinSentence(currentCommerce?.name_establishment || "")}/${
           currentCommerce?.id

@@ -5,8 +5,9 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { collection, doc, getDocs, getDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebaseConnection";
+import Login from "../../components/modals/Login";
 
 export type ContextValue = {
   currentCommerce: EstablishmentTypes | undefined;
@@ -17,10 +18,9 @@ export type ContextValue = {
   setFormattedDate: React.Dispatch<
     React.SetStateAction<CommerceSchedulesProps>
   >;
-  establishments: EstablishmentTypes[] | undefined;
   fetchEstablishmentsById: (id: string) => Promise<void>;
-  loadingEstablishments: boolean;
   loadingEstablishment: boolean;
+  showLogin: boolean
 };
 
 export const CommerceContext = React.createContext<ContextValue | undefined>(
@@ -32,8 +32,7 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
   ...rest
 }) => {
   const [currentCommerce, setCurrentCommerce] = useState<EstablishmentTypes>();
-  const [establishments, setEstablishments] = useState<EstablishmentTypes[]>();
-  const [loadingEstablishments, setLoadingEstablishments] = useState(false);
+  const [showLogin, setShowLogin] = useState(true);
   const [loadingEstablishment, setLoadingEstablishment] = useState(false);
   const [formattedDate, setFormattedDate] = useState<CommerceSchedulesProps>({
     dayOnWeek: "",
@@ -47,36 +46,6 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
     service: "SERVIÇO",
     time: "HORÁRIO",
   });
-
-  const fetchEstablishments = useCallback(async () => {
-    setLoadingEstablishments(true);
-    const establishmentsRef = collection(db, "establishments");
-
-    try {
-      const querySnapshot = await getDocs(establishmentsRef);
-
-      const establishmentsData = querySnapshot.docs.map((doc) => {
-        const data = doc.data() as EstablishmentTypes;
-
-        return {
-          id: doc.id,
-          name_establishment: data.name_establishment || "",
-          avatar_url: data.avatar_url || "",
-          cover_url: data.cover_url || "",
-          type: data.type || "",
-          follow_up: data.follow_up || "",
-          employees: data.employees || [],
-          services: data.services || [],
-          about: data.about,
-          products: data.products
-        };
-      });
-
-      setEstablishments(establishmentsData);
-    } finally {
-      setLoadingEstablishments(false);
-    }
-  }, []);
 
   const fetchEstablishmentsById = useCallback(async (id: string) => {
     setLoadingEstablishment(true);
@@ -97,16 +66,12 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
           employees: data.employees || [],
           services: data.services || [],
           about: data.about,
-          products: data.products
+          products: data.products,
         });
       }
     } finally {
       setLoadingEstablishment(false);
     }
-  }, []);
-
-  useEffect(() => {
-    fetchEstablishments();
   }, []);
 
   const value = useMemo(
@@ -115,20 +80,18 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
       setFormattedDate,
       currentCommerce,
       setCurrentCommerce,
-      establishments,
       fetchEstablishmentsById,
-      loadingEstablishments,
       loadingEstablishment,
+      showLogin
     }),
     [
       formattedDate,
       setFormattedDate,
       currentCommerce,
       setCurrentCommerce,
-      establishments,
       fetchEstablishmentsById,
-      loadingEstablishments,
       loadingEstablishment,
+      showLogin
     ]
   );
 
@@ -180,18 +143,18 @@ interface EstablishmentTypes {
     avatar_url: string;
     function: string;
     name: string;
-    schedules: string[]
+    schedules: string[];
   }[];
-  services: string[]
+  services: string[];
   about: {
     description: string;
     images: string[];
     location: string;
-    phone_number: string
-  }
+    phone_number: string;
+  };
   products: {
     product_name: string;
     product_url: string;
-    value: string
-  }[]
+    value: string;
+  }[];
 }
