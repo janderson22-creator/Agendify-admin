@@ -8,6 +8,7 @@ import { useCommerce } from "../../context/commerce";
 import { Link } from "react-router-dom";
 import { joinSentence } from "../../utils/join-sentence";
 import Skeleton from "../../components/Base/skeleton";
+import Login from "../../components/modals/Login";
 
 const Establishment: React.FC = () => {
   const { currentCommerce, fetchEstablishmentsById, loadingEstablishment } = useCommerce();
@@ -115,6 +116,7 @@ const Establishment: React.FC = () => {
       </S.Services>
 
       {showModal && <DetailsMoldal show={showModal} setShow={setShowModal} />}
+      <Login />
     </S.Container>
   );
 };
