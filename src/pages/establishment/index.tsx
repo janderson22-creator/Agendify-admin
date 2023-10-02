@@ -11,7 +11,7 @@ import Skeleton from "../../components/Base/skeleton";
 import Login from "../../components/modals/Login";
 
 const Establishment: React.FC = () => {
-  const { currentCommerce, fetchEstablishmentsById, loadingEstablishment } = useCommerce();
+  const { currentCommerce, loadingEstablishment } = useCommerce();
   const [open, setOpen] = useState(true);
   const [showModal, setShowModal] = useState(false);
 
@@ -45,22 +45,11 @@ const Establishment: React.FC = () => {
     [currentCommerce]
   );
 
-  useEffect(() => {
-    if (currentCommerce) return;
-
-    const id = location.pathname.split("/")[2];
-
-    fetchEstablishmentsById(id);
-  }, []);
-
   return (
     <S.Container>
       <S.Header>
         <div className="relative">
-          <Skeleton
-            style="w-full h-[250px]"
-            loading={loadingEstablishment}
-          >
+          <Skeleton style="w-full h-[250px]" loading={loadingEstablishment}>
             <S.CoverImage src={currentCommerce?.cover_url} />
           </Skeleton>
 
@@ -116,7 +105,8 @@ const Establishment: React.FC = () => {
       </S.Services>
 
       {showModal && <DetailsMoldal show={showModal} setShow={setShowModal} />}
-      <Login />
+
+      {!currentCommerce && <Login />}
     </S.Container>
   );
 };

@@ -5,9 +5,9 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../firebaseConnection";
-import Login from "../../components/modals/Login";
+import { doc, getDoc, collection, getDocs } from "firebase/firestore";
+import { auth, db } from "../../firebaseConnection";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 export type ContextValue = {
   currentCommerce: EstablishmentTypes | undefined;
@@ -20,7 +20,8 @@ export type ContextValue = {
   >;
   fetchEstablishmentsById: (id: string) => Promise<void>;
   loadingEstablishment: boolean;
-  showLogin: boolean
+  showLogin: boolean;
+  sigIn: (email: string, password: string) => Promise<void>;
 };
 
 export const CommerceContext = React.createContext<ContextValue | undefined>(
@@ -32,7 +33,9 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
   ...rest
 }) => {
   const [currentCommerce, setCurrentCommerce] = useState<EstablishmentTypes>();
+  const [ownerId, setOwnerId] = useState("");
   const [showLogin, setShowLogin] = useState(true);
+  const [establishments, setEstablishments] = useState<EstablishmentTypes[]>();
   const [loadingEstablishment, setLoadingEstablishment] = useState(false);
   const [formattedDate, setFormattedDate] = useState<CommerceSchedulesProps>({
     dayOnWeek: "",
@@ -46,6 +49,49 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
     service: "SERVIÇO",
     time: "HORÁRIO",
   });
+
+  const sigIn = useCallback(async (email: string, password: string) => {
+    try {
+      const response = await signInWithEmailAndPassword(auth, email, password);
+      setOwnerId(response.user.uid);
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
+
+  const fetchEstablishments = useCallback(async () => {
+    const establishmentsRef = collection(db, "establishments");
+
+    try {
+      const querySnapshot = await getDocs(establishmentsRef);
+
+      const establishmentsData = querySnapshot.docs.map((doc) => {
+        const data = doc.data() as EstablishmentTypes;
+
+        return {
+          id: doc.id,
+          name_establishment: data.name_establishment || "",
+          avatar_url: data.avatar_url || "",
+          cover_url: data.cover_url || "",
+          type: data.type || "",
+          follow_up: data.follow_up || "",
+          employees: data.employees || [],
+          services: data.services || [],
+          about: data.about,
+          products: data.products,
+          owner_id: data.owner_id,
+        };
+      });
+
+      setEstablishments(establishmentsData);
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchEstablishments();
+  }, []);
 
   const fetchEstablishmentsById = useCallback(async (id: string) => {
     setLoadingEstablishment(true);
@@ -67,12 +113,25 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
           services: data.services || [],
           about: data.about,
           products: data.products,
+          owner_id: data.owner_id,
         });
       }
     } finally {
       setLoadingEstablishment(false);
     }
   }, []);
+
+  useEffect(() => {
+    if (!ownerId) return;
+
+    const adminEstablishment = establishments?.filter(
+      (f) => f.owner_id === ownerId
+    );
+
+    if (adminEstablishment) {
+      fetchEstablishmentsById(adminEstablishment[0].id);
+    }
+  }, [ownerId]);
 
   const value = useMemo(
     () => ({
@@ -82,7 +141,8 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
       setCurrentCommerce,
       fetchEstablishmentsById,
       loadingEstablishment,
-      showLogin
+      showLogin,
+      sigIn,
     }),
     [
       formattedDate,
@@ -91,7 +151,8 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
       setCurrentCommerce,
       fetchEstablishmentsById,
       loadingEstablishment,
-      showLogin
+      showLogin,
+      sigIn,
     ]
   );
 
@@ -134,6 +195,7 @@ interface CommerceSchedulesProps {
 
 interface EstablishmentTypes {
   id: string;
+  owner_id: string;
   name_establishment: string;
   avatar_url: string;
   cover_url: string;

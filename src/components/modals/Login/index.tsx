@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import classNames from "../../../utils/className";
 import { EmailIconLogin } from "../../../assets/icons/emailIconLogin";
 import { PasswordIconLogin } from "../../../assets/icons/passwordIconLogin";
+import { useCommerce } from "../../../context/commerce";
 
 const Login: React.FC = () => {
+  const { sigIn } = useCommerce();
   const [focus, setFocus] = useState<FocusType>("");
   const [form, setForm] = useState<FormType>({
     email: "",
@@ -77,7 +79,10 @@ const Login: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-center justify-center bg-[#F5F5FC] rounded-[4px] w-full py-2 cursor-pointer mt-20">
+        <div
+          onClick={() => sigIn(form.email, form.password)}
+          className="flex items-center justify-center bg-[#F5F5FC] rounded-[4px] w-full py-2 cursor-pointer mt-20"
+        >
           <p className="text-[#141616] text-[15px] font-bold">Entrar</p>
         </div>
       </div>
