@@ -50,14 +50,14 @@ const Establishment: React.FC = () => {
       <S.Header>
         <div className="relative">
           <Skeleton style="w-full h-[250px]" loading={loadingEstablishment}>
-            <S.CoverImage src={currentCommerce?.cover_url} />
+            <S.CoverImage src={currentCommerce?.cover_url || 'https://picsum.photos/200/300'} />
           </Skeleton>
 
           <Skeleton
             style="w-[150px] max-w-[150px] h-[150px] max-h-[150px] rounded-[50%] absolute -bottom-[50px] left-0 right-0 mx-auto border-[5px]"
             loading={loadingEstablishment}
           >
-            <S.ProfileImage src={currentCommerce?.avatar_url} />
+            <S.ProfileImage src={currentCommerce?.avatar_url || 'https://picsum.photos/200/300'} />
           </Skeleton>
         </div>
 
