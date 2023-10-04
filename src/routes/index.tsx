@@ -18,10 +18,6 @@ const RoutesMain: React.FC = () => {
     }
   }, [currentCommerce]);
 
-  useEffect(() => {
-    console.log(nameEstablishment)
-  }, [nameEstablishment])
-
   return (
     <Routes>
       <Route
