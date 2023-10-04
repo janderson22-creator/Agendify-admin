@@ -25,58 +25,27 @@ const Menu: React.FC = () => {
     () => [
       {
         name: "Estabelecimento",
-        link: `/${joinSentence(currentCommerce?.name_establishment || "")}/${
-          currentCommerce?.id
+        link: `/${joinSentence(currentCommerce?.name_establishment || "")}
         }`,
         icon: <CommerceIcon />,
-        show:
-          currentCommerce &&
-          Object.keys(currentCommerce).length > 0 &&
-          location.pathname !== "/"
-            ? true
-            : false,
-        checked: pathname.split("/").length === 3,
+        checked: pathname.split("/").length === 2,
       },
       {
         name: "Agendamento",
-        link: `/${joinSentence(currentCommerce?.name_establishment || "")}/${
-          currentCommerce?.id
-        }/schedules`,
+        link: `/${joinSentence(currentCommerce?.name_establishment || "")}/schedules`,
         icon: <SchedulesIcon />,
-        show:
-          currentCommerce &&
-          Object.keys(currentCommerce).length > 0 &&
-          location.pathname !== "/"
-            ? true
-            : false,
         checked: pathname.includes("schedules"),
       },
       {
         name: "Produtos",
-        link: `/${joinSentence(currentCommerce?.name_establishment || "")}/${
-          currentCommerce?.id
-        }/products`,
+        link: `/${joinSentence(currentCommerce?.name_establishment || "")}/products`,
         icon: <ProductsIcon />,
-        show:
-          currentCommerce &&
-          Object.keys(currentCommerce).length > 0 &&
-          location.pathname !== "/"
-            ? true
-            : false,
         checked: pathname.includes("products"),
       },
       {
         name: "Serviços",
-        link: `/${joinSentence(currentCommerce?.name_establishment || "")}/${
-          currentCommerce?.id
-        }/services`,
+        link: `/${joinSentence(currentCommerce?.name_establishment || "")}/services`,
         icon: <ServicesIcon />,
-        show:
-          currentCommerce &&
-          Object.keys(currentCommerce).length > 0 &&
-          location.pathname !== "/"
-            ? true
-            : false,
         checked: pathname.includes("services"),
       },
     ],
@@ -109,8 +78,7 @@ const Menu: React.FC = () => {
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
                 className={classNames(
-                  "items-center justify-center rounded-[10px] lg:min-h-[40px] lg:min-w-[50px] lg:mx-5 relative",
-                  item.show ? "flex" : "hidden",
+                  "flex items-center justify-center rounded-[10px] lg:min-h-[40px] lg:min-w-[50px] lg:mx-5 relative",
                   item.checked ? "" : ""
                 )}
               >

@@ -7,20 +7,17 @@ import React, {
 } from "react";
 import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 import { auth, db } from "../../firebaseConnection";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 
 export type ContextValue = {
-  currentCommerce: EstablishmentTypes | undefined;
-  setCurrentCommerce: React.Dispatch<
-    React.SetStateAction<EstablishmentTypes | undefined>
-  >;
+  currentCommerce: EstablishmentTypes
+  setCurrentCommerce: React.Dispatch<React.SetStateAction<EstablishmentTypes>>
   formattedDate: CommerceSchedulesProps;
   setFormattedDate: React.Dispatch<
     React.SetStateAction<CommerceSchedulesProps>
   >;
   fetchEstablishmentsById: (id: string) => Promise<void>;
   loadingEstablishment: boolean;
-  showLogin: boolean;
   sigIn: (email: string, password: string) => Promise<void>;
 };
 
@@ -32,9 +29,8 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
   children,
   ...rest
 }) => {
-  const [currentCommerce, setCurrentCommerce] = useState<EstablishmentTypes>();
+  const [currentCommerce, setCurrentCommerce] = useState<EstablishmentTypes>({} as EstablishmentTypes);
   const [ownerId, setOwnerId] = useState("");
-  const [showLogin, setShowLogin] = useState(true);
   const [establishments, setEstablishments] = useState<EstablishmentTypes[]>();
   const [loadingEstablishment, setLoadingEstablishment] = useState(false);
   const [formattedDate, setFormattedDate] = useState<CommerceSchedulesProps>({
@@ -55,7 +51,7 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
       const response = await signInWithEmailAndPassword(auth, email, password);
       setOwnerId(response.user.uid);
     } catch (e) {
-      console.log(e);
+      console.log(e, 'ERROR SIGN IN');
     }
   }, []);
 
@@ -85,7 +81,7 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
 
       setEstablishments(establishmentsData);
     } catch (e) {
-      console.log(e);
+      console.log(e, 'ERROR FETCH ESTABLISHMENTS');
     }
   }, []);
 
@@ -122,6 +118,26 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
   }, []);
 
   useEffect(() => {
+    async function checkLogin() {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          const adminEstablishment = establishments?.filter(
+            (f) => f.owner_id === user.uid
+          );
+
+          if (adminEstablishment) {
+            fetchEstablishmentsById(adminEstablishment[0].id);
+          }
+        } else {
+          console.log("DON'T HAVE USER");
+        }
+      });
+    }
+
+    checkLogin();
+  }, [establishments]);
+
+  useEffect(() => {
     if (!ownerId) return;
 
     const adminEstablishment = establishments?.filter(
@@ -141,7 +157,6 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
       setCurrentCommerce,
       fetchEstablishmentsById,
       loadingEstablishment,
-      showLogin,
       sigIn,
     }),
     [
@@ -151,7 +166,6 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
       setCurrentCommerce,
       fetchEstablishmentsById,
       loadingEstablishment,
-      showLogin,
       sigIn,
     ]
   );
