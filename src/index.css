@@ -31,13 +31,33 @@
 
 @keyframes toTop {
   0% {
-    transform: translateY(0px);
+    margin-top: 100px;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  100% {
+    margin-top: 0;
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.swipeScreen {
+  animation: swipe 0.6s cubic-bezier(0.53, -0.03, 0.67, 1.06);
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+}
+
+@keyframes swipe {
+  0% {
+    transform: translateX(0px);
     opacity: 1;
     visibility: visible;
   }
 
   100% {
-    transform: translateY(-150px);
+    transform: translateX(500px);
     opacity: 0;
     visibility: hidden;
   }
@@ -48,7 +68,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.5;
   }
   50% {
