@@ -106,7 +106,7 @@ const Establishment: React.FC = () => {
 
       {showModal && <DetailsMoldal show={showModal} setShow={setShowModal} />}
 
-      {!currentCommerce && <Login />}
+      {!currentCommerce.employees && <Login />}
     </S.Container>
   );
 };

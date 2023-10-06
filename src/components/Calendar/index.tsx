@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import moment from "moment";
 import "moment/locale/pt-br";
+import { EstablishmentTypes } from "../../context/commerce";
 
 const localizer = momentLocalizer(moment);
+
+interface Props {
+  employee: EstablishmentTypes["employees"][0] | null;
+}
 
 // Simulação de dados de agendamento
 const eventos = [
@@ -33,27 +38,24 @@ const eventos = [
   // Adicione mais eventos conforme necessário
 ];
 
-// Função para agrupar eventos por dia e contar quantos eventos têm em cada dia
-function agruparEventosPorDia(eventos: any[]) {
-  const eventosPorDia: Record<string, any[]> = {};
-  eventos.forEach((evento) => {
-    const data = moment(evento.start).format("YYYY-MM-DD");
-    if (!eventosPorDia[data]) {
-      eventosPorDia[data] = [];
-    }
-    eventosPorDia[data].push(evento);
-  });
-  return eventosPorDia;
-}
+const Schedules: React.FC<Props> = ({ employee }) => {
 
-const Schedules: React.FC = () => {
+  const events = (employee?.schedules_marked || []).map((item) => ({
+    title: item.name_user,
+    description: item.description,
+    phone_number: item.phone_number,
+    service: item.service,
+    start: new Date(item.start.seconds * 1000 + item.start.nanoseconds / 1000000),
+    end: new Date(item.end.seconds * 1000 + item.end.nanoseconds / 1000000),
+  }));
+  
   return (
     <div>
       <div className="mt-7">
         <h2>Calendário de Agendamentos</h2>
         <Calendar
           localizer={localizer}
-          events={eventos}
+          events={events}
           startAccessor={(evento) => new Date(evento.start)}
           endAccessor={(evento) => new Date(evento.end)}
           style={{ height: "calc(100vh - 200px)" }}
