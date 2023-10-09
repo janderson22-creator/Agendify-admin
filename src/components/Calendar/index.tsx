@@ -4,39 +4,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import moment from "moment";
 import "moment/locale/pt-br";
 import { EstablishmentTypes } from "../../context/commerce";
-
 const localizer = momentLocalizer(moment);
-
-interface Props {
-  employee: EstablishmentTypes["employees"][0] | null;
-}
-
-// Simulação de dados de agendamento
-const eventos = [
-  {
-    name: "Janderson Costa",
-    service: "Corte degradê 20$",
-    name_employee: "Janderson costa Barbeiro",
-    start: new Date(2023, 9, 10, 9, 0),
-    end: new Date(2023, 9, 10, 10, 0),
-  },
-  {
-    name: "Rodolfo",
-    start: new Date(2023, 9, 10, 14, 0),
-    end: new Date(2023, 9, 10, 15, 0),
-  },
-  {
-    name: "Mathias",
-    start: new Date(2023, 9, 11, 14, 0),
-    end: new Date(2023, 9, 11, 15, 0),
-  },
-  {
-    name: "Denis",
-    start: new Date(2023, 9, 12, 10, 0),
-    end: new Date(2023, 9, 12, 11, 0),
-  },
-  // Adicione mais eventos conforme necessário
-];
 
 const Schedules: React.FC<Props> = ({ employee }) => {
 
@@ -93,3 +61,8 @@ const Schedules: React.FC<Props> = ({ employee }) => {
 };
 
 export default Schedules;
+
+// utils
+interface Props {
+  employee: EstablishmentTypes["employees"][0] | null;
+}

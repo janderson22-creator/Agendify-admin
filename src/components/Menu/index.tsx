@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { HomeIcon } from "../../assets/icons/homeIcon";
 import { ProductsIcon } from "../../assets/icons/productsIcon";
 import { SchedulesIcon } from "../../assets/icons/schedulesIcon";
+import Logout from "../../assets/icons/logout.svg";
 import { ServicesIcon } from "../../assets/icons/services";
 import { useCommerce } from "../../context/commerce";
 import * as S from "./styles";
@@ -12,7 +12,7 @@ import { CommerceIcon } from "../../assets/icons/commerce";
 import Tooltip from "../Base/tooltip";
 
 const Menu: React.FC = () => {
-  const { currentCommerce, setCurrentCommerce } = useCommerce();
+  const { currentCommerce, signOutCommerce } = useCommerce();
   const location = useLocation();
   const [hoverTooltips, setHoverTooltips] = useState<HoverTooltipsState>({});
   const [pathname, setPathname] = useState<string>("");
@@ -32,19 +32,25 @@ const Menu: React.FC = () => {
       },
       {
         name: "Agendamento",
-        link: `/${joinSentence(currentCommerce?.name_establishment || "")}/schedules`,
+        link: `/${joinSentence(
+          currentCommerce?.name_establishment || ""
+        )}/schedules`,
         icon: <SchedulesIcon />,
         checked: pathname.includes("schedules"),
       },
       {
         name: "Produtos",
-        link: `/${joinSentence(currentCommerce?.name_establishment || "")}/products`,
+        link: `/${joinSentence(
+          currentCommerce?.name_establishment || ""
+        )}/products`,
         icon: <ProductsIcon />,
         checked: pathname.includes("products"),
       },
       {
         name: "Serviços",
-        link: `/${joinSentence(currentCommerce?.name_establishment || "")}/services`,
+        link: `/${joinSentence(
+          currentCommerce?.name_establishment || ""
+        )}/services`,
         icon: <ServicesIcon />,
         checked: pathname.includes("services"),
       },
@@ -89,6 +95,10 @@ const Menu: React.FC = () => {
             </Link>
           );
         })}
+      </div>
+
+      <div className="ml-auto pr-[50px] cursor-pointer" onClick={() => signOutCommerce()}>
+        <img src={Logout} alt="" />
       </div>
     </S.Container>
   );
