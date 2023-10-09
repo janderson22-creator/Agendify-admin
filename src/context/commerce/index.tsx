@@ -9,6 +9,7 @@ import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 import { auth, db } from "../../firebaseConnection";
 import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 
+
 export type ContextValue = {
   currentCommerce: EstablishmentTypes
   setCurrentCommerce: React.Dispatch<React.SetStateAction<EstablishmentTypes>>
@@ -207,7 +208,7 @@ interface CommerceSchedulesProps {
   time: string;
 }
 
-interface EstablishmentTypes {
+export interface EstablishmentTypes {
   id: string;
   owner_id: string;
   name_establishment: string;
@@ -220,6 +221,7 @@ interface EstablishmentTypes {
     function: string;
     name: string;
     schedules: string[];
+    schedules_marked: ScheduleMarkedTypes[]
   }[];
   services: string[];
   about: {
@@ -233,4 +235,19 @@ interface EstablishmentTypes {
     product_url: string;
     value: string;
   }[];
+}
+
+export interface ScheduleMarkedTypes {
+  description: string;
+  name_user: string;
+  phone_number: string;
+  service: string;
+  start: {
+    seconds: number;
+    nanoseconds: number;
+  };
+  end: {
+    seconds: number;
+    nanoseconds: number;
+  };
 }

@@ -1,16 +1,20 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import ArrowRight from "../../assets/icons/right-arrow.svg";
 
-import { useCommerce } from "../../context/commerce";
+import { EstablishmentTypes, useCommerce } from "../../context/commerce";
 import classNames from "../../utils/className";
 import InputSearch from "../Base/input-search";
 import Schedules from "../Calendar";
+import { Timestamp } from "firebase/firestore";
 
 const Employees: React.FC = () => {
   const { currentCommerce } = useCommerce();
   const [value, setValue] = useState("");
   const [showCalendar, setShowCalendar] = useState(false);
   const [activeSwipe, setActiveSwipe] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState<
+    EstablishmentTypes["employees"][0] | null
+  >(null);
 
   const filterEmployees = useMemo(() => {
     if (value === "") {
@@ -22,9 +26,13 @@ const Employees: React.FC = () => {
     }
   }, [value, currentCommerce]);
 
-  const showCalendarComponent = useCallback(() => {
-    setShowCalendar(true);
-  }, []);
+  const showCalendarComponent = useCallback(
+    (employee: EstablishmentTypes["employees"][0]) => {
+      setShowCalendar(true);
+      setSelectedEmployee(employee);
+    },
+    []
+  );
 
   return (
     <div className="w-full flex flex-col justify-around">
@@ -49,9 +57,9 @@ const Employees: React.FC = () => {
             </div>
 
             <div className="flex flex-col">
-              {filterEmployees.map((employeer, index) => (
+              {filterEmployees.map((employee, index) => (
                 <div
-                  onClick={() => showCalendarComponent()}
+                  onClick={() => showCalendarComponent(employee)}
                   key={index}
                   className={classNames(
                     "border-b border-l border-r border-[#EBEBF0] flex items-center text-[#141616] font-semibold py-4 cursor-pointer hover:bg-[#eeebf54d]"
@@ -60,13 +68,13 @@ const Employees: React.FC = () => {
                   <span className="w-[20%] pl-3">{index + 1}</span>
                   <div className="w-[30%]">
                     <img
-                      src={employeer.avatar_url}
+                      src={employee.avatar_url}
                       alt="schedules_app"
                       className="w-[40px] h-[40px] rounded-full object-cover"
                     />
                   </div>
-                  <span className="w-[30%]">{employeer.name}</span>
-                  <span className="w-[20%]">{employeer.function}</span>
+                  <span className="w-[30%]">{employee.name}</span>
+                  <span className="w-[20%]">{employee.function}</span>
                 </div>
               ))}
             </div>
@@ -102,7 +110,7 @@ const Employees: React.FC = () => {
           </p>
         </div>
 
-        <Schedules />
+        <Schedules employee={selectedEmployee} />
       </div>
     </div>
   );
