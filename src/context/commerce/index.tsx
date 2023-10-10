@@ -7,12 +7,15 @@ import React, {
 } from "react";
 import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 import { auth, db } from "../../firebaseConnection";
-import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
-
+import {
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut,
+} from "firebase/auth";
 
 export type ContextValue = {
-  currentCommerce: EstablishmentTypes
-  setCurrentCommerce: React.Dispatch<React.SetStateAction<EstablishmentTypes>>
+  currentCommerce: EstablishmentTypes;
+  setCurrentCommerce: React.Dispatch<React.SetStateAction<EstablishmentTypes>>;
   formattedDate: CommerceSchedulesProps;
   setFormattedDate: React.Dispatch<
     React.SetStateAction<CommerceSchedulesProps>
@@ -20,6 +23,7 @@ export type ContextValue = {
   fetchEstablishmentsById: (id: string) => Promise<void>;
   loadingEstablishment: boolean;
   sigIn: (email: string, password: string) => Promise<void>;
+  signOutCommerce: () => Promise<void>;
 };
 
 export const CommerceContext = React.createContext<ContextValue | undefined>(
@@ -30,7 +34,9 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
   children,
   ...rest
 }) => {
-  const [currentCommerce, setCurrentCommerce] = useState<EstablishmentTypes>({} as EstablishmentTypes);
+  const [currentCommerce, setCurrentCommerce] = useState<EstablishmentTypes>(
+    {} as EstablishmentTypes
+  );
   const [ownerId, setOwnerId] = useState("");
   const [establishments, setEstablishments] = useState<EstablishmentTypes[]>();
   const [loadingEstablishment, setLoadingEstablishment] = useState(false);
@@ -52,7 +58,7 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
       const response = await signInWithEmailAndPassword(auth, email, password);
       setOwnerId(response.user.uid);
     } catch (e) {
-      console.log(e, 'ERROR SIGN IN');
+      console.log(e, "ERROR SIGN IN");
     }
   }, []);
 
@@ -82,7 +88,7 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
 
       setEstablishments(establishmentsData);
     } catch (e) {
-      console.log(e, 'ERROR FETCH ESTABLISHMENTS');
+      console.log(e, "ERROR FETCH ESTABLISHMENTS");
     }
   }, []);
 
@@ -150,6 +156,16 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
     }
   }, [ownerId]);
 
+  const signOutCommerce = useCallback(async () => {
+    try {
+      const response = await signOut(auth);
+      setCurrentCommerce({} as EstablishmentTypes)
+      console.log(response);
+    } catch (e) {
+      console.log(e);
+    }
+  }, [auth]);
+
   const value = useMemo(
     () => ({
       formattedDate,
@@ -159,6 +175,7 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
       fetchEstablishmentsById,
       loadingEstablishment,
       sigIn,
+      signOutCommerce,
     }),
     [
       formattedDate,
@@ -168,6 +185,7 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
       fetchEstablishmentsById,
       loadingEstablishment,
       sigIn,
+      signOutCommerce,
     ]
   );
 
@@ -221,7 +239,7 @@ export interface EstablishmentTypes {
     function: string;
     name: string;
     schedules: string[];
-    schedules_marked: ScheduleMarkedTypes[]
+    schedules_marked: ScheduleMarkedTypes[];
   }[];
   services: string[];
   about: {
