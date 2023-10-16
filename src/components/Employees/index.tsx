@@ -8,11 +8,13 @@ import classNames from "../../utils/className";
 import InputSearch from "../Base/input-search";
 import Schedules from "../Calendar";
 import ModalDelete from "../modals/ModalDelete";
+import ModalAddEmployee from "../modals/modalAddEmployee";
 
 const Employees: React.FC = () => {
   const { currentCommerce } = useCommerce();
   const [value, setValue] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const [activeSwipe, setActiveSwipe] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<
@@ -40,6 +42,7 @@ const Employees: React.FC = () => {
   return (
     <div className="w-full flex flex-col justify-around">
       {showDeleteModal && <ModalDelete title={"Funcionario"} icon={TrashIcon} setShow={setShowDeleteModal} />}
+      {showAddModal && <ModalAddEmployee setShow={setShowAddModal} /> }
 
       <div className={classNames(showCalendar ? "hidden" : "flex flex-col")}>
         <div className="flex items-center justify-between">
@@ -51,7 +54,7 @@ const Employees: React.FC = () => {
             />
           </div>
 
-          <button className="bg-[#738CBF] rounded-[10px] text-sm text-[#141616] font-semibold pr-[47px] pl-[30px] max-h-[42px] py-3 flex items-center ml-4 whitespace-nowrap">
+          <button onClick={() => setShowAddModal(true)} className="bg-[#738CBF] rounded-[10px] text-sm text-[#141616] font-semibold pr-[47px] pl-[30px] max-h-[42px] py-3 flex items-center ml-4 whitespace-nowrap">
             <span className="text-[25px] mr-3">+</span>
             Adicionar funcionario
           </button>

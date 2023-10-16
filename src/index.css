@@ -63,6 +63,26 @@
   }
 }
 
+.fromLeft {
+  animation: toLeft 0.6s cubic-bezier(0.53, -0.03, 0.67, 1.06);
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+}
+
+@keyframes toLeft {
+  0% {
+    right: -500px;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  100% {
+    right: 0;
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
 .swipeScreen {
   animation: swipe 0.6s cubic-bezier(0.53, -0.03, 0.67, 1.06);
   animation-direction: alternate;
