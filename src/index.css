@@ -43,6 +43,26 @@
   }
 }
 
+.fromTopModal {
+  animation: toTop 0.6s cubic-bezier(0.53, -0.03, 0.67, 1.06);
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+}
+
+@keyframes toTop {
+  0% {
+    bottom: -500px;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  100% {
+    bottom: 0;
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
 .swipeScreen {
   animation: swipe 0.6s cubic-bezier(0.53, -0.03, 0.67, 1.06);
   animation-direction: alternate;
@@ -75,4 +95,9 @@
   50% {
     opacity: 1;
   }
+}
+
+
+.rbc-event-label {
+  display: none;
 }
