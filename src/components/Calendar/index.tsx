@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import moment from "moment";
@@ -16,40 +16,62 @@ const Schedules: React.FC<Props> = ({ employee }) => {
     start: new Date(item.start.seconds * 1000 + item.start.nanoseconds / 1000000),
     end: new Date(item.end.seconds * 1000 + item.end.nanoseconds / 1000000),
   }));
-  
+
+  const messages = {
+    allDay: 'Dia inteiro',
+    previous: 'Anterior',
+    next: 'Próximo',
+    today: 'Hoje',
+    month: 'Mês',
+    week: 'Semana',
+    day: 'Dia',
+    date: 'Data',
+    time: 'Hora',
+    event: 'Evento',
+  };
+
   return (
     <div>
       <div className="mt-7">
-        <h2>Calendário de Agendamentos</h2>
         <Calendar
           localizer={localizer}
           events={events}
-          startAccessor={(evento) => new Date(evento.start)}
-          endAccessor={(evento) => new Date(evento.end)}
+          startAccessor="start"
+          endAccessor="end"
+          messages={messages}
           style={{ height: "calc(100vh - 200px)" }}
           views={["month", "week", "day"]}
           components={{
             month: {
               event: ({ event }) => (
-                <div className="event-month" onClick={() => console.log(event)}>
+                <div className="event-month">
                   <div className="event-details">
                     {moment(event.start).format("HH:mm")} -{" "}
                     {moment(event.end).format("HH:mm")}
+                    <div className="event-title">{event.title}</div>
                   </div>
                 </div>
               ),
             },
             week: {
               event: ({ event }) => (
-                <div className="event-week">
-                  <div className="event-title">{/* {event.title} */}</div>
+                <div className="event-week" onClick={() => console.log(event)}>
+                  <div className="event-details">
+                    {moment(event.start).format("HH:mm")} -{" "}
+                    {moment(event.end).format("HH:mm")}
+                    <div className="event-title">{event.title}</div>
+                  </div>
                 </div>
               ),
             },
             day: {
               event: ({ event }) => (
-                <div className="event-day">
-                  <div className="event-title">{/* {event.title} */}</div>
+                <div className="event-day" onClick={() => console.log(event)}>
+                  <div className="event-details">
+                    {moment(event.start).format("HH:mm")} -{" "}
+                    {moment(event.end).format("HH:mm")}
+                    <div className="event-title">{event.title}</div>
+                  </div>
                 </div>
               ),
             },
@@ -65,4 +87,4 @@ export default Schedules;
 // utils
 interface Props {
   employee: EstablishmentTypes["employees"][0] | null;
-}
+};
