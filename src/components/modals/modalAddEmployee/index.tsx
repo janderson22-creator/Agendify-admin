@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AvatarUrlDefault from "../../../assets/img/avatar.webp";
 import ImageUpload from "../../ImageUpload";
 import Label from "../../Label";
 import TopModal from "../../TopModal";
+import InputAdd from "../../Base/input-add/input-add";
+import { Employees } from "../../../context/commerce";
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -10,6 +12,22 @@ interface Props {
 
 const ModalAddEmployee: React.FC<Props> = ({ setShow }) => {
   const [image, setImage] = useState<string>("");
+  const [newEmployee, setNewEmployee] = useState<Employees>({
+    avatar_url: "",
+    function: "",
+    name: "",
+    schedules: [],
+    schedules_marked: [],
+  });
+
+  useEffect(() => {
+    if (image === "") return;
+    setNewEmployee((prev) => ({ ...prev, avatar_url: image }));
+  }, [image]);
+
+  useEffect(() => {
+    console.log(newEmployee)
+  }, [newEmployee]);
 
   return (
     <>
@@ -18,7 +36,6 @@ const ModalAddEmployee: React.FC<Props> = ({ setShow }) => {
         className="fixed w-full h-full left-0 right-0 bottom-0 top-0 m-auto bg-[#00000066] z-[1]"
       />
       <div className="h-full flex flex-col items-center fixed w-[500px] bg-[#FFF] m-auto top-0 bottom-0 right-0 z-[2] rounded-l-[10px] fromLeft">
-        
         <TopModal text="Adicionar Funcionario" setShow={setShow} />
 
         <div className="flex w-full justify-center items-center mt-2">
@@ -32,12 +49,32 @@ const ModalAddEmployee: React.FC<Props> = ({ setShow }) => {
         </div>
 
         <div className="w-full mt-10 px-5">
-          <div>
+          <div className="gap-2 flex flex-col">
             <Label text={"Nome"} />
+            <InputAdd
+              value={newEmployee?.name}
+              setValue={(newValue) =>
+                setNewEmployee((prev) => ({
+                  ...prev,
+                  name: newValue as string,
+                }))
+              }
+              placeholder="Ex: João Maria"
+            />
           </div>
 
-          <div className="mt-10">
+          <div className="mt-10 flex flex-col gap-2">
             <Label text={"Função"} />
+            <InputAdd
+              value={newEmployee?.function}
+              setValue={(newValue) =>
+                setNewEmployee((prev) => ({
+                  ...prev,
+                  function: newValue as string,
+                }))
+              }
+              placeholder="Ex: Barbeiro (a)"
+            />
           </div>
 
           <div className="mt-10">
