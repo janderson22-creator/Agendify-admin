@@ -159,7 +159,7 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
   const signOutCommerce = useCallback(async () => {
     try {
       const response = await signOut(auth);
-      setCurrentCommerce({} as EstablishmentTypes)
+      setCurrentCommerce({} as EstablishmentTypes);
       console.log(response);
     } catch (e) {
       console.log(e);
@@ -234,13 +234,7 @@ export interface EstablishmentTypes {
   cover_url: string;
   type: string;
   follow_up: string;
-  employees: {
-    avatar_url: string;
-    function: string;
-    name: string;
-    schedules: string[];
-    schedules_marked: ScheduleMarkedTypes[];
-  }[];
+  employees: Employees[];
   services: string[];
   about: {
     description: string;
@@ -268,4 +262,22 @@ export interface ScheduleMarkedTypes {
     seconds: number;
     nanoseconds: number;
   };
+}
+
+export interface Employees {
+  avatar_url: string;
+  function: string;
+  name: string;
+  schedules: EmployeeSchedules;
+  schedules_marked: ScheduleMarkedTypes[];
+}
+
+export interface EmployeeSchedules {
+  friday: string[];
+  monday: string[];
+  saturday: string[];
+  sunday: string[];
+  thursday: string[];
+  tuesday: string[];
+  wednesday: string[];
 }

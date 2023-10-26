@@ -59,6 +59,7 @@ const Employees: React.FC = () => {
             Adicionar funcionario
           </button>
         </div>
+        
         {filterEmployees?.length ? (
           <>
             <div className="flex items-center mt-4 pl-3 bg-[#F0F0F5] py-4 rounded-t-[10px]">

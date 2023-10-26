@@ -11,7 +11,7 @@ const TopModal: React.FC<Props> = ({ text, setShow }) => {
   return (
     <div className="w-full">
       <div className="w-full flex items-center justify-between px-5 h-[60px]">
-        <span className="text-[#00000022] text-base lg:text-[20px] font-bold">
+        <span className="text-base lg:text-[20px] font-semibold opacity-75">
           {text}
         </span>
         <img
