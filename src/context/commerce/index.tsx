@@ -273,11 +273,11 @@ export interface Employees {
 }
 
 export interface EmployeeSchedules {
-  friday: string[];
-  monday: string[];
-  saturday: string[];
   sunday: string[];
-  thursday: string[];
+  monday: string[];
   tuesday: string[];
   wednesday: string[];
+  thursday: string[];
+  friday: string[];
+  saturday: string[];
 }
