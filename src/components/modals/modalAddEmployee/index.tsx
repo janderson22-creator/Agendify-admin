@@ -18,13 +18,13 @@ const ModalAddEmployee: React.FC<Props> = ({ setShow }) => {
     function: "",
     name: "",
     schedules: {
-      friday: [],
-      monday: [],
-      saturday: [],
       sunday: [],
-      thursday: [],
+      monday: [],
       tuesday: [],
       wednesday: [],
+      thursday: [],
+      friday: [],
+      saturday: [],
     },
     schedules_marked: [],
   });
@@ -33,6 +33,10 @@ const ModalAddEmployee: React.FC<Props> = ({ setShow }) => {
     if (image === "") return;
     setNewEmployee((prev) => ({ ...prev, avatar_url: image }));
   }, [image]);
+
+  useEffect(() => {
+    console.log(newEmployee);
+  }, [newEmployee]);
 
   return (
     <>
@@ -85,7 +89,7 @@ const ModalAddEmployee: React.FC<Props> = ({ setShow }) => {
 
             <div className="flex flex-col gap-4 mt-10">
               <Label text={"Dias que trabalha"} />
-              <DaysOfWeek />
+              <DaysOfWeek setNewEmployee={setNewEmployee} />
             </div>
           </div>
         </div>
