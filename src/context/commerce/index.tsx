@@ -268,6 +268,16 @@ export interface Employees {
   avatar_url: string;
   function: string;
   name: string;
-  schedules: string[];
+  schedules: EmployeeSchedules;
   schedules_marked: ScheduleMarkedTypes[];
+}
+
+export interface EmployeeSchedules {
+  friday: string[];
+  monday: string[];
+  saturday: string[];
+  sunday: string[];
+  thursday: string[];
+  tuesday: string[];
+  wednesday: string[];
 }
