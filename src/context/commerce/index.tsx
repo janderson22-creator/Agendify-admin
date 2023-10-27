@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { doc, getDoc, collection, getDocs } from "firebase/firestore";
+import { doc, getDoc, collection, getDocs, setDoc } from "firebase/firestore";
 import { auth, db } from "../../firebaseConnection";
 import {
   signInWithEmailAndPassword,
@@ -24,6 +24,7 @@ export type ContextValue = {
   loadingEstablishment: boolean;
   sigIn: (email: string, password: string) => Promise<void>;
   signOutCommerce: () => Promise<void>;
+  addEmployee: (newEmployee: Employees) => Promise<void>;
 };
 
 export const CommerceContext = React.createContext<ContextValue | undefined>(
@@ -166,6 +167,25 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
     }
   }, [auth]);
 
+  const addEmployee = useCallback(async (newEmployee: Employees) => {
+    if (!currentCommerce || !currentCommerce.employees || !currentCommerce.id) return;
+
+    const establishmentRef = doc(db, "establishments", currentCommerce.id);
+    console.log(newEmployee);
+
+    try {
+      const establishmentDoc = currentCommerce;
+
+      if (establishmentDoc) {
+        establishmentDoc.employees.push(newEmployee);
+
+        await setDoc(establishmentRef, establishmentDoc);
+      }
+    } catch (e) {
+      console.log(e, "ERROR ADD EMPLOYEE");
+    }
+  }, [currentCommerce]);
+
   const value = useMemo(
     () => ({
       formattedDate,
@@ -176,6 +196,7 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
       loadingEstablishment,
       sigIn,
       signOutCommerce,
+      addEmployee,
     }),
     [
       formattedDate,
@@ -186,6 +207,7 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
       loadingEstablishment,
       sigIn,
       signOutCommerce,
+      addEmployee,
     ]
   );
 
@@ -265,6 +287,7 @@ export interface ScheduleMarkedTypes {
 }
 
 export interface Employees {
+  id: string;
   avatar_url: string;
   function: string;
   name: string;
