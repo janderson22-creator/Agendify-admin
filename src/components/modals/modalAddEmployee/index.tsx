@@ -4,8 +4,9 @@ import ImageUpload from "../../ImageUpload";
 import Label from "../../Label";
 import TopModal from "../../TopModal";
 import InputAdd from "../../Base/input-add/input-add";
-import { Employees, useCommerce } from "../../../context/commerce";
+import { Employees } from "../../../context/commerce";
 import DaysOfWeek from "../../DaysOfWeek";
+import { v4 as uuidv4 } from "uuid";
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -14,6 +15,7 @@ interface Props {
 const ModalAddEmployee: React.FC<Props> = ({ setShow }) => {
   const [image, setImage] = useState<string>("");
   const [newEmployee, setNewEmployee] = useState<Employees>({
+    id: uuidv4(),
     avatar_url: "",
     function: "",
     name: "",
@@ -33,11 +35,7 @@ const ModalAddEmployee: React.FC<Props> = ({ setShow }) => {
     if (image === "") return;
     setNewEmployee((prev) => ({ ...prev, avatar_url: image }));
   }, [image]);
-
-  useEffect(() => {
-    console.log(newEmployee);
-  }, [newEmployee]);
-
+  
   return (
     <>
       <div
@@ -89,7 +87,11 @@ const ModalAddEmployee: React.FC<Props> = ({ setShow }) => {
 
             <div className="flex flex-col gap-4 mt-10">
               <Label text={"Dias que trabalha"} />
-              <DaysOfWeek setNewEmployee={setNewEmployee} />
+              <DaysOfWeek
+                employee={newEmployee}
+                setNewEmployee={setNewEmployee}
+                setShowModal={setShow}
+              />
             </div>
           </div>
         </div>

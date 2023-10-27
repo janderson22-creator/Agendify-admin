@@ -1,13 +1,20 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Arrow from "../../assets/icons/arrow-bottom.svg";
 import classNames from "../../utils/className";
-import { Employees } from "../../context/commerce";
+import { Employees, useCommerce } from "../../context/commerce";
 
 interface Props {
+  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  employee: Employees;
   setNewEmployee: React.Dispatch<React.SetStateAction<Employees>>;
 }
 
-const DaysOfWeek: React.FC<Props> = ({ setNewEmployee }) => {
+const DaysOfWeek: React.FC<Props> = ({
+  setShowModal,
+  employee,
+  setNewEmployee,
+}) => {
+  const { addEmployee } = useCommerce();
   const [daySelected, setDaySelected] = useState("");
   const [selectedHours, setSelectedHours] = useState<SelectedHours>({});
   const [daysOfWeek, setDaysOfWeek] = useState([
@@ -437,9 +444,7 @@ const DaysOfWeek: React.FC<Props> = ({ setNewEmployee }) => {
         };
       }
     });
-  };
 
-  const confirmation = () => {
     setNewEmployee((prev) => ({
       ...prev,
       schedules: {
@@ -452,6 +457,10 @@ const DaysOfWeek: React.FC<Props> = ({ setNewEmployee }) => {
         saturday: selectedHours["Sabado"] || [],
       },
     }));
+  };
+
+  const confirmation = () => {
+    addEmployee(employee);
   };
 
   return (
