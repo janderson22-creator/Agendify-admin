@@ -35,7 +35,7 @@ const ModalAddEmployee: React.FC<Props> = ({ setShow }) => {
     if (image === "") return;
     setNewEmployee((prev) => ({ ...prev, avatar_url: image }));
   }, [image]);
-  
+
   return (
     <>
       <div

@@ -25,6 +25,7 @@ export type ContextValue = {
   sigIn: (email: string, password: string) => Promise<void>;
   signOutCommerce: () => Promise<void>;
   addEmployee: (newEmployee: Employees) => Promise<void>;
+  removeEmployee: (employeeId: string) => Promise<void>
 };
 
 export const CommerceContext = React.createContext<ContextValue | undefined>(
@@ -167,24 +168,56 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
     }
   }, [auth]);
 
-  const addEmployee = useCallback(async (newEmployee: Employees) => {
-    if (!currentCommerce || !currentCommerce.employees || !currentCommerce.id) return;
+  const addEmployee = useCallback(
+    async (newEmployee: Employees) => {
+      console.log(newEmployee)
+      if (!currentCommerce || !currentCommerce.employees || !currentCommerce.id)
+        return;
 
-    const establishmentRef = doc(db, "establishments", currentCommerce.id);
-    console.log(newEmployee);
+      const establishmentRef = doc(db, "establishments", currentCommerce.id);
 
-    try {
-      const establishmentDoc = currentCommerce;
+      try {
+        const establishmentDoc = currentCommerce;
 
-      if (establishmentDoc) {
-        establishmentDoc.employees.push(newEmployee);
+        if (establishmentDoc) {
+          establishmentDoc.employees.push(newEmployee);
 
-        await setDoc(establishmentRef, establishmentDoc);
+          await setDoc(establishmentRef, establishmentDoc);
+        }
+      } catch (e) {
+        console.log(e, "ERROR ADD EMPLOYEE");
       }
-    } catch (e) {
-      console.log(e, "ERROR ADD EMPLOYEE");
-    }
-  }, [currentCommerce]);
+    },
+    [currentCommerce]
+  );
+
+  const removeEmployee = useCallback(
+    async (employeeId: string) => {
+      if (!currentCommerce || !currentCommerce.employees || !currentCommerce.id)
+        return;
+
+      const employeeIndex = currentCommerce.employees.findIndex(
+        (employee) => employee.id === employeeId
+      );
+
+      if (employeeIndex !== -1) {
+        currentCommerce.employees.splice(employeeIndex, 1);
+
+        const establishmentRef = doc(db, "establishments", currentCommerce.id);
+
+        setDoc(establishmentRef, currentCommerce)
+          .then(() => {
+            console.log(
+              `Funcionário com ID ${employeeId} removido com sucesso.`
+            );
+          })
+          .catch((error) => {
+            console.error("Erro ao atualizar o documento no Firebase:", error);
+          });
+      }
+    },
+    [currentCommerce]
+  );
 
   const value = useMemo(
     () => ({
@@ -197,6 +230,7 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
       sigIn,
       signOutCommerce,
       addEmployee,
+      removeEmployee,
     }),
     [
       formattedDate,
@@ -207,7 +241,7 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
       loadingEstablishment,
       sigIn,
       signOutCommerce,
-      addEmployee,
+      removeEmployee,
     ]
   );
 

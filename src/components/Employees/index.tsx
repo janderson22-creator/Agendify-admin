@@ -11,7 +11,7 @@ import ModalDelete from "../modals/ModalDelete";
 import ModalAddEmployee from "../modals/modalAddEmployee";
 
 const Employees: React.FC = () => {
-  const { currentCommerce } = useCommerce();
+  const { currentCommerce, removeEmployee } = useCommerce();
   const [value, setValue] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -20,6 +20,7 @@ const Employees: React.FC = () => {
   const [selectedEmployee, setSelectedEmployee] = useState<
     EstablishmentTypes["employees"][0] | null
   >(null);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string>("");
 
   const filterEmployees = useMemo(() => {
     if (value === "") {
@@ -39,10 +40,23 @@ const Employees: React.FC = () => {
     []
   );
 
+  const deleteEmployee = (id: string) => {
+    setShowDeleteModal(true);
+    setSelectedEmployeeId(id);
+  };
+
   return (
     <div className="w-full flex flex-col justify-around">
-      {showDeleteModal && <ModalDelete title={"Funcionario"} icon={TrashIcon} setShow={setShowDeleteModal} />}
-      {showAddModal && <ModalAddEmployee setShow={setShowAddModal} /> }
+      {showDeleteModal && (
+        <ModalDelete
+          title={"Funcionario"}
+          icon={TrashIcon}
+          setShow={setShowDeleteModal}
+          id={selectedEmployeeId}
+          clickRemove={removeEmployee}
+        />
+      )}
+      {showAddModal && <ModalAddEmployee setShow={setShowAddModal} />}
 
       <div className={classNames(showCalendar ? "hidden" : "flex flex-col")}>
         <div className="flex items-center justify-between">
@@ -54,12 +68,15 @@ const Employees: React.FC = () => {
             />
           </div>
 
-          <button onClick={() => setShowAddModal(true)} className="bg-[#738CBF] rounded-[10px] text-sm text-[#141616] font-semibold pr-[47px] pl-[30px] max-h-[42px] py-3 flex items-center ml-4 whitespace-nowrap">
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="bg-[#738CBF] rounded-[10px] text-sm text-[#141616] font-semibold pr-[47px] pl-[30px] max-h-[42px] py-3 flex items-center ml-4 whitespace-nowrap"
+          >
             <span className="text-[25px] mr-3">+</span>
             Adicionar funcionario
           </button>
         </div>
-        
+
         {filterEmployees?.length ? (
           <>
             <div className="flex items-center mt-4 pl-3 bg-[#F0F0F5] py-4 rounded-t-[10px]">
@@ -108,7 +125,7 @@ const Employees: React.FC = () => {
                       src={DeleteIcon}
                       alt="delete"
                       className="ml-3"
-                      onClick={() => setShowDeleteModal(true)}
+                      onClick={() => deleteEmployee(employee.id)}
                     />
                   </div>
                 </div>

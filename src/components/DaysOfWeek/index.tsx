@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Arrow from "../../assets/icons/arrow-bottom.svg";
 import classNames from "../../utils/className";
 import { Employees, useCommerce } from "../../context/commerce";
@@ -12,7 +12,6 @@ interface Props {
 const DaysOfWeek: React.FC<Props> = ({
   setShowModal,
   employee,
-  setNewEmployee,
 }) => {
   const { addEmployee } = useCommerce();
   const [daySelected, setDaySelected] = useState("");
@@ -444,24 +443,27 @@ const DaysOfWeek: React.FC<Props> = ({
         };
       }
     });
-
-    setNewEmployee((prev) => ({
-      ...prev,
-      schedules: {
-        sunday: selectedHours["Domingo"] || [],
-        monday: selectedHours["Segunda-Feira"] || [],
-        tuesday: selectedHours["Terça-Feira"] || [],
-        wednesday: selectedHours["Quarta-Feira"] || [],
-        thursday: selectedHours["Quinta-Feira"] || [],
-        friday: selectedHours["Sexta-Feira"] || [],
-        saturday: selectedHours["Sabado"] || [],
-      },
-    }));
   };
 
   const confirmation = () => {
-    addEmployee(employee);
+    const updatedEmployee = { ...employee };
+    updatedEmployee.schedules = {
+      sunday: selectedHours["Domingo"] || [],
+      monday: selectedHours["Segunda-Feira"] || [],
+      tuesday: selectedHours["Terça-Feira"] || [],
+      wednesday: selectedHours["Quarta-Feira"] || [],
+      thursday: selectedHours["Quinta-Feira"] || [],
+      friday: selectedHours["Sexta-Feira"] || [],
+      saturday: selectedHours["Sabado"] || [],
+    };
+
+    addEmployee(updatedEmployee);
+    setShowModal(false);
   };
+
+  useEffect(() => {
+    console.log(selectedHours);
+  }, [selectedHours]);
 
   return (
     <div>
