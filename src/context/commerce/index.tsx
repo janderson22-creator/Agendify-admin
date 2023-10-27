@@ -170,7 +170,6 @@ export const CommerceProvider: React.FC<ChildrenProps> = ({
 
   const addEmployee = useCallback(
     async (newEmployee: Employees) => {
-      console.log(newEmployee)
       if (!currentCommerce || !currentCommerce.employees || !currentCommerce.id)
         return;
 

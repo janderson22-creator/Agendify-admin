@@ -135,7 +135,7 @@ const Employees: React.FC = () => {
         ) : (
           <div className="flex items-center justify-center mt-10 h-[200px]">
             <p className="text-2xl text-[#141616] font-normal">
-              Não contém nenhum profissional com esse nome!
+              Não contém nenhum profissional cadastrado ainda!
             </p>
           </div>
         )}

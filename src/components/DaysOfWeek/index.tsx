@@ -9,10 +9,7 @@ interface Props {
   setNewEmployee: React.Dispatch<React.SetStateAction<Employees>>;
 }
 
-const DaysOfWeek: React.FC<Props> = ({
-  setShowModal,
-  employee,
-}) => {
+const DaysOfWeek: React.FC<Props> = ({ setShowModal, employee }) => {
   const { addEmployee } = useCommerce();
   const [daySelected, setDaySelected] = useState("");
   const [selectedHours, setSelectedHours] = useState<SelectedHours>({});
@@ -424,9 +421,11 @@ const DaysOfWeek: React.FC<Props> = ({
     dayIndex: number,
     hourIndex: number
   ) => {
+
     const updatedDaysOfWeek = [...daysOfWeek];
     updatedDaysOfWeek[dayIndex].hours[hourIndex].checked =
       !updatedDaysOfWeek[dayIndex].hours[hourIndex].checked;
+      
     setDaysOfWeek(updatedDaysOfWeek);
 
     setSelectedHours((prevSelectedHours) => {
@@ -446,6 +445,19 @@ const DaysOfWeek: React.FC<Props> = ({
   };
 
   const confirmation = () => {
+    if (employee.avatar_url === "") {
+      alert("Adicione uma foto de perfil");
+      return;
+    }
+    if (employee.name === "") {
+      alert("Adicione um nome");
+      return;
+    }
+    if (employee.function === "") {
+      alert("Adicione uma função");
+      return;
+    }
+
     const updatedEmployee = { ...employee };
     updatedEmployee.schedules = {
       sunday: selectedHours["Domingo"] || [],
@@ -460,10 +472,6 @@ const DaysOfWeek: React.FC<Props> = ({
     addEmployee(updatedEmployee);
     setShowModal(false);
   };
-
-  useEffect(() => {
-    console.log(selectedHours);
-  }, [selectedHours]);
 
   return (
     <div>
